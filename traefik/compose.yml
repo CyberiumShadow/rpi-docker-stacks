@@ -1,0 +1,49 @@
+services:
+  traefik:
+    # The official v2 Traefik docker image
+    image: traefik:v2.11.3
+    hostname: traefik
+    container_name: traefik
+    restart: unless-stopped
+    # Enables the web UI and tells Traefik to listen to docker
+    command: 
+    - --log.level=DEBUG
+    - --api.dashboard=true
+    - --entrypoints.web.address=:80
+    - --entrypoints.websecure.address=:443
+    - --entrypoints.web.http.redirections.entrypoint.to=websecure
+    - --entrypoints.web.http.redirections.entrypoint.scheme=https
+    - --providers.docker
+    - --providers.docker.endpoint=tcp://dockerproxy:2375
+    - --providers.docker.exposedbydefault=false
+    - --providers.file.directory=/data
+    - --providers.file.watch=true
+    env_file: stack.env
+    ports:
+      # The HTTP port
+      - "80:80"
+      - "443:443"
+      # The Web UI (enabled by --api.insecure=true)
+      #- "8080:8080"
+    volumes:
+      - traefik:/data
+      - /etc/letsencrypt/live/cyberiumshadow.xyz:/data/certs/live/cyberiumshadow.xyz:ro
+      - /etc/letsencrypt/archive/cyberiumshadow.xyz:/data/certs/archive/cyberiumshadow.xyz:ro
+    labels:
+      - "traefik.enable=false"
+    networks:
+      traefik:
+      docker-proxy:
+
+networks:
+  docker-proxy:
+    external: true
+  traefik:
+    name: traefik
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.0.0/16"
+
+volumes:
+  traefik:
