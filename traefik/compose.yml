@@ -9,6 +9,11 @@ services:
     command: 
     - --log.level=DEBUG
     - --api.dashboard=true
+    - --certificatesresolvers.le.acme.email=cyberiumdev@gmail.com
+    - --certificatesresolvers.le.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
+    - --certificatesresolvers.le.acme.storage=/data/acme.json
+    - --certificatesresolvers.le.acme.dnschallenge=true
+    - --certificatesresolvers.le.acme.dnschallenge.provider=bunny
     - --entrypoints.web.address=:80
     - --entrypoints.websecure.address=:443
     - --entrypoints.web.http.redirections.entrypoint.to=websecure
@@ -27,10 +32,18 @@ services:
       #- "8080:8080"
     volumes:
       - traefik:/data
-      - /etc/letsencrypt/live/cyberiumshadow.xyz:/data/certs/live/cyberiumshadow.xyz:ro
-      - /etc/letsencrypt/archive/cyberiumshadow.xyz:/data/certs/archive/cyberiumshadow.xyz:ro
+
     labels:
-      - "traefik.enable=false"
+      - "traefik.enable=true"
+      - "traefik.http.routers.traefik.entrypoints=websecure"
+      - "traefik.http.routers.traefik.rule=Host(`traefik.cyberiumshadow.xyz`)"
+      - "traefik.http.routers.traefik.service=api@internal"
+      - "traefik.http.routers.traefik.tls=true"
+      - "traefik.http.routers.traefik.tls.certresolver=le"
+      - "traefik.http.routers.traefik.tls.domains[0].main=cyberiumshadow.xyz"
+      - "traefik.http.routers.traefik.tls.domains[0].sans=*.cyberiumshadow.xyz"
+      - "traefik.http.services.traefik.loadbalancer.server.port=443"
+      - "traefik.docker.network=traefik"
     networks:
       traefik:
       docker-proxy:
