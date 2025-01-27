@@ -1,0 +1,54 @@
+volumes:
+  etc_pihole-unbound:
+  etc_pihole_dnsmasq-unbound:
+
+services:
+  pihole:
+    container_name: pihole
+    image: rlabinc/pihole-unbound:latest
+    hostname: pihole
+    #domainname: ${DOMAIN_NAME}
+    dns:
+      - 127.0.0.1
+    ports:
+      #- 8443:443/tcp This doesn't seem to be used at all
+      - 53:53/tcp # DNS
+      - 53:53/udp # DNS
+      - 8${PIHOLE_WEBPORT:-80}:80/tcp #We don't actually need to publish this anymore
+      - 5335:5335/tcp # Uncomment to enable unbound access on local server
+      # - 22/tcp # Uncomment to enable SSH
+    environment:
+      - FTLCONF_LOCAL_IPV4=${FTLCONF_LOCAL_IPV4}
+      - TZ=${TZ}
+      - WEBPASSWORD=${WEBPASSWORD}
+      - WEBTHEME=${WEBTHEME:-default-light}
+      - REV_SERVER=${REV_SERVER}
+      - REV_SERVER_TARGET=${REV_SERVER_TARGET}
+      - VIRTUAL_HOST=${VIRTUAL_HOST}
+      # - REV_SERVER_DOMAIN=${REV_SERVER_DOMAIN}
+      - REV_SERVER_CIDR=${REV_SERVER_CIDR}
+      - PIHOLE_DNS_=127.0.0.1#5335
+      - DNSSEC="true"
+      - DNSMASQ_LISTENING=single
+    env_file: .env
+    volumes:
+      - etc_pihole-unbound:/etc/pihole:rw
+      - etc_pihole_dnsmasq-unbound:/etc/dnsmasq.d:rw
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pihole.entrypoints=websecure"
+      - "traefik.http.routers.pihole.rule=Host(`dns.cyberiumshadow.xyz`)"
+      - "traefik.http.routers.pihole.tls=true"
+      #- "traefik.http.routers.pihole.tls.certresolver=letsencrypt"
+      - "traefik.http.services.pihole.loadbalancer.server.port=80"
+      - "traefik.docker.network=traefik"
+      - "flame.type=application" # "app" works too
+      - "flame.name=PiHole"
+      - "flame.url=https://dns.cyberiumshadow.xyz"
+    networks:
+      traefik:
+    restart: unless-stopped
+
+networks:
+  traefik:
+    external: true
