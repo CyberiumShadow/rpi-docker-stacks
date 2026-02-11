@@ -8,8 +8,6 @@ services:
     image: invoiceshelf/invoiceshelf:nightly
     container_name: invoiceshelf
     volumes:
-      - sqlite_data:/data
-      - sqlite_conf:/conf
       - sqlite_storage:/var/www/html/storage
       - modules:/var/www/html/Modules/
     networks:
