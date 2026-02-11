@@ -19,7 +19,7 @@ services:
       - "traefik.http.routers.invoiceshelf.entrypoints=websecure"
       - "traefik.http.routers.invoiceshelf.rule=Host(`invoice.cyberiumshadow.xyz`)"
       - "traefik.http.routers.invoiceshelf.tls=true"
-      - "traefik.http.services.invoiceshelf.loadbalancer.server.port=80"
+      - "traefik.http.services.invoiceshelf.loadbalancer.server.port=8080"
       - "traefik.docker.network=traefik"
       - "flame.type=application" # "app" works too
       - "flame.name=InvoiceShelf"
