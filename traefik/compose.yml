@@ -1,7 +1,7 @@
 services:
   traefik:
     # The official v2 Traefik docker image
-    image: traefik:v2.11.3
+    image: traefik:v2.11.36
     hostname: traefik
     container_name: traefik
     restart: unless-stopped
@@ -23,13 +23,13 @@ services:
     - --providers.docker.exposedbydefault=false
     - --providers.file.directory=/data
     - --providers.file.watch=true
-    env_file: stack.env
     ports:
       # The HTTP port
       - "80:80"
       - "443:443"
       # The Web UI (enabled by --api.insecure=true)
       #- "8080:8080"
+    env_file: .env
     volumes:
       - traefik:/data
 
