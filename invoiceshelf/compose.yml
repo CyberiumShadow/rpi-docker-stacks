@@ -10,8 +10,8 @@ services:
     volumes:
       - sqlite_data:/data
       - sqlite_conf:/conf
-      - invoiceshelf_storage:/var/www/html/storage
-      - invoiceshelf_modules:/var/www/html/Modules/
+      - sqlite_storage:/var/www/html/storage
+      - modules:/var/www/html/Modules/
     networks:
       - traefik
     labels:
@@ -46,8 +46,8 @@ networks:
     external: true
 
 volumes:
-  invoiceshelf_storage:
-  invoiceshelf_modules:
+  sqlite_storage:
+  modules:
   sqlite_conf:
   sqlite_data:
   
