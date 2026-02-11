@@ -46,6 +46,4 @@ networks:
 volumes:
   sqlite_storage:
   modules:
-  sqlite_conf:
-  sqlite_data:
   
