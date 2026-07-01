@@ -1,19 +1,22 @@
 services:
   traefik:
-    # The official v2 Traefik docker image
-    image: traefik:v2.11.36
+    # The official v3 Traefik docker image
+    image: traefik:v3.7.6
     hostname: traefik
     container_name: traefik
     restart: unless-stopped
     # Enables the web UI and tells Traefik to listen to docker
     command: 
-    - --log.level=DEBUG
+    - --log.level=INFO
     - --api.dashboard=true
     - --certificatesresolvers.le.acme.email=cyberiumdev@gmail.com
     - --certificatesresolvers.le.acme.caserver=https://acme-v02.api.letsencrypt.org/directory
     - --certificatesresolvers.le.acme.storage=/data/acme.json
+    - --certificatesresolvers.le.acme.keyType=EC256
+    - --certificatesresolvers.le.acme.profile=shortlived
+    - --certificatesresolvers.le.acme.certificatesDuration=160
     - --certificatesresolvers.le.acme.dnschallenge=true
-    - --certificatesresolvers.le.acme.dnschallenge.provider=bunny
+    - --certificatesresolvers.le.acme.dnschallenge.provider=desec
     - --entrypoints.web.address=:80
     - --entrypoints.websecure.address=:443
     - --entrypoints.web.http.redirections.entrypoint.to=websecure
