@@ -1,0 +1,41 @@
+services:
+  pocket-id:
+    image: pocketid/pocket-id:v2
+    restart: unless-stopped
+    environment:
+      APP_URL: "${APP_URL}"
+      ENCRYPTION_KEY: "${ENCRYPTION_KEY}"
+      TRUST_PROXY: "${TRUST_PROXY:-false}"
+      PROXY_PROTOCOL: "${PROXY_PROTOCOL:-false}"
+      TRUSTED_PLATFORM: "${TRUSTED_PLATFORM:-}"
+      ALLOW_INSECURE_CALLBACK_URLS: "${ALLOW_INSECURE_CALLBACK_URLS:-false}"
+      MAXMIND_LICENSE_KEY: "${MAXMIND_LICENSE_KEY:-}"
+      PUID: "${PUID:-1000}"
+      PGID: "${PGID:-1000}"
+    networks:
+      - traefik
+    volumes:
+      - "data:/app/data"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.pocketid.entrypoints=websecure"
+      - "traefik.http.routers.pocketid.rule=Host(`auth.cyberiumshadow.xyz`)"
+      - "traefik.http.routers.pocketid.tls=true"
+      - "traefik.http.services.pocketid.loadbalancer.server.port=1414"
+      - "traefik.docker.network=traefik"
+      - "flame.type=application" # "app" works too
+      - "flame.name=actual"
+      - "flame.url=https://auth.cyberiumshadow.xyz"
+    healthcheck:
+      test: ["CMD", "/app/pocket-id", "healthcheck"]
+      interval: 1m30s
+      timeout: 5s
+      retries: 2
+      start_period: 10s
+
+networks:
+  traefik:
+    external: true
+
+volumes:
+  data:
