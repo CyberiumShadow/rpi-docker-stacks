@@ -9,6 +9,16 @@ services:
     restart: unless-stopped
     privileged: true
     network_mode: host
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.homeassistant.entrypoints=websecure"
+      - "traefik.http.routers.homeassistant.rule=Host(`homeassistant.cyberiumshadow.xyz`)"
+      - "traefik.http.routers.homeassistant.tls=true"
+      - "traefik.http.services.homeassistant.loadbalancer.server.url=http://192.168.20.249:8123"
+      - "traefik.docker.network=traefik"
+      - "flame.type=application" # "app" works too
+      - "flame.name=actual"
+      - "flame.url=https://homeassistant.cyberiumshadow.xyz"
 
 volumes:
   homeassistant_config:
