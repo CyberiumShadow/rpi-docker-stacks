@@ -50,6 +50,8 @@ services:
         TINYAUTH_OAUTH_AUTOREDIRECT: "pocketid"
     networks:
       - traefik
+    extra_hosts:
+      - "id.cyberiumshadow.xyz:host-gateway"
     labels:
         - "traefik.enable=true"
         - "traefik.docker.network=traefik"
