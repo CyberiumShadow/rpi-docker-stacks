@@ -33,6 +33,35 @@ services:
       retries: 2
       start_period: 10s
 
+  tinyauth:
+    image: ghcr.io/tinyauthapp/tinyauth:v5
+    restart: unless-stopped
+    environment:
+        TINYAUTH_APPURL: "${TINYAUTH_APPURL}"
+        TINYAUTH_AUTH_TRUSTEDPROXIES: "${TINYAUTH_AUTH_TRUSTEDPROXIES:-172.16.0.0/12}"
+        TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTID: "${POCKETID_CLIENT_ID}"
+        TINYAUTH_OAUTH_PROVIDERS_POCKETID_CLIENTSECRET: "${POCKETID_CLIENT_SECRET}"
+        TINYAUTH_OAUTH_PROVIDERS_POCKETID_AUTHURL: "${POCKETID_URL}/authorize"
+        TINYAUTH_OAUTH_PROVIDERS_POCKETID_TOKENURL: "${POCKETID_URL}/api/oidc/token"
+        TINYAUTH_OAUTH_PROVIDERS_POCKETID_USERINFOURL: "${POCKETID_URL}/api/oidc/userinfo"
+        TINYAUTH_OAUTH_PROVIDERS_POCKETID_REDIRECTURL: "${POCKETID_URL}/api/oauth/callback/pocketid"
+        TINYAUTH_OAUTH_PROVIDERS_POCKETID_SCOPES: "${POCKETID_SCOPES:-openid email profile groups}"
+        TINYAUTH_OAUTH_PROVIDERS_POCKETID_NAME: "${POCKETID_NAME:-Pocket ID}"
+        TINYAUTH_OAUTH_AUTOREDIRECT: "pocketid"
+    networks:
+      - traefik
+    labels:
+        - "traefik.enable=true"
+        - "traefik.docker.network=traefik"
+        - "traefik.http.routers.tinyauth.rule=Host(`${TINYAUTH_HOST}`)"
+        - "traefik.http.routers.tinyauth.entrypoints=websecure"
+        - "traefik.http.routers.tinyauth.tls=true"
+        - "traefik.http.services.tinyauth.loadbalancer.server.port=3000"
+        - "traefik.http.middlewares.tinyauth.forwardauth.address=http://tinyauth:3000/api/auth/traefik"
+        - "flame.type=application"
+        - "flame.name=TinyAuth"
+        - "flame.url=${TINYAUTH_APPURL}"
+
 networks:
   traefik:
     external: true
