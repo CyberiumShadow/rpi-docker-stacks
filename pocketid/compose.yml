@@ -13,9 +13,7 @@ services:
       PUID: "${PUID:-1000}"
       PGID: "${PGID:-1000}"
     networks:
-      traefik:
-        aliases:
-          - id.cyberiumshadow.xyz
+      - traefik
     volumes:
       - "data:/app/data"
     labels:
