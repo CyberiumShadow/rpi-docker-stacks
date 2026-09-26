@@ -4,6 +4,8 @@ services:
     image: bellamy/wallos:latest
     environment:
       TZ: 'Australia/Melbourne'
+    networks:
+      - traefik
     # Volumes store your data between container upgrades
     volumes:
       - 'db:/var/www/html/db'
