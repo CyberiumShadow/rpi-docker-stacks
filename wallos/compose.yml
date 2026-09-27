@@ -16,10 +16,10 @@ services:
       OIDC_DISABLE_PASSWORD_LOGIN: "true"
       OIDC_REQUIRE_EMAIL_VERIFIED: "false"
       SSRF_ALLOWLIST: "${SSRF_ALLOWLIST}"
+    dns:
+      - 192.168.20.249
     networks:
       - traefik
-    extra_hosts:
-      - "id.cyberiumshadow.xyz:pocket-id"
     # Volumes store your data between container upgrades
     volumes:
       - 'db:/var/www/html/db'
