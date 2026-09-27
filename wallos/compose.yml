@@ -8,13 +8,13 @@ services:
       OIDC_PROVIDER_NAME: "${OIDC_PROVIDER_NAME}"
       OIDC_CLIENT_ID: "${OIDC_CLIENT_ID}"
       OIDC_CLIENT_SECRET: "${OIDC_CLIENT_SECRET}"
-      OIDC_ISSUER: "https://id.cyberiumshadow.xyz"
-      OIDC_REDIRECT_URL: "https://wallos.cyberiumshadow.xyz/index.php"
+      OIDC_ISSUER: "${OIDC_ISSUER}"
+      OIDC_REDIRECT_URL: "${OIDC_REDIRECT_URL}"
       OIDC_USER_IDENTIFIER: "email"
       OIDC_SCOPES: "openid profile email"
       OIDC_AUTO_CREATE_USER: "true"
       OIDC_DISABLE_PASSWORD_LOGIN: "true"
-      OIDC_REQUIRE_EMAIL_VERIFIED: "true"
+      OIDC_REQUIRE_EMAIL_VERIFIED: "false"
       SSRF_ALLOWLIST: "id.cyberiumshadow.xyz"
     networks:
       - traefik
