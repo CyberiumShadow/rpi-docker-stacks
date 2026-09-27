@@ -9,7 +9,7 @@ services:
       OIDC_CLIENT_ID: "${OIDC_CLIENT_ID}"
       OIDC_CLIENT_SECRET: "${OIDC_CLIENT_SECRET}"
       OIDC_ISSUER: "https://id.cyberiumshadow.xyz"
-      OIDC_REDIRECT_URL: "https://wallos.cyberiumshadow.xyz/login.php"
+      OIDC_REDIRECT_URL: "https://wallos.cyberiumshadow.xyz/index.php"
       OIDC_USER_IDENTIFIER: "email"
       OIDC_SCOPES: "openid profile email"
       OIDC_AUTO_CREATE_USER: "true"
