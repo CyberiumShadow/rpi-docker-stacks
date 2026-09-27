@@ -18,6 +18,8 @@ services:
       SSRF_ALLOWLIST: "${SSRF_ALLOWLIST}"
     networks:
       - traefik
+    extra_hosts:
+      - "id.cyberiumshadow.xyz:pocket-id"
     # Volumes store your data between container upgrades
     volumes:
       - 'db:/var/www/html/db'
