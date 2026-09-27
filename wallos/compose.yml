@@ -15,7 +15,7 @@ services:
       OIDC_AUTO_CREATE_USER: "true"
       OIDC_DISABLE_PASSWORD_LOGIN: "true"
       OIDC_REQUIRE_EMAIL_VERIFIED: "false"
-      SSRF_ALLOWLIST: "id.cyberiumshadow.xyz"
+      SSRF_ALLOWLIST: "${SSRF_ALLOWLIST}"
     networks:
       - traefik
     # Volumes store your data between container upgrades
