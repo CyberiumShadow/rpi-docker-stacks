@@ -3,6 +3,8 @@ services:
     image: docker.io/actualbudget/actual-server:latest-alpine
     volumes:
       - actual:/data
+    dns:
+      - 192.168.20.249
     networks:
       - traefik
     healthcheck:
