@@ -1,0 +1,33 @@
+services:
+  papra:
+    image: ghcr.io/papra-hq/papra:latest
+    container_name: papra
+    restart: unless-stopped
+    dns:
+      - 192.168.20.249
+    networks:
+      - traefik
+    environment:
+      - AUTH_SECRET=2s2julXJ95Wmx9sP52irKogssFLM42mqoPhGovg54D7gyatz
+      - APP_BASE_URL=https://papra.cyberiumshadow.xyz
+    volumes:
+      - papra_data:/app/app-data
+    user: 1000:1000
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.papra.entrypoints=websecure"
+      - "traefik.http.routers.papra.rule=Host(`papra.cyberiumshadow.xyz`)"
+      - "traefik.http.routers.papra.tls=true"
+      - "traefik.http.services.papra.loadbalancer.server.port=1221"
+      - "traefik.docker.network=traefik"
+      - "flame.type=application" # "app" works too
+      - "flame.name=papra"
+      - "flame.url=https://papra.cyberiumshadow.xyz"
+
+volumes:
+  papra_data:
+
+networks:
+  traefik:
+    external: true
+
