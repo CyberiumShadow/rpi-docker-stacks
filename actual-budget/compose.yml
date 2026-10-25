@@ -26,7 +26,31 @@ services:
       - "flame.name=actual"
       - "flame.url=https://budget.cyberiumshadow.xyz"
 
+  actual-bench:
+    image: xrous/actual-bench:latest
+    container_name: actual-bench
+    environment:
+      ACTUAL_BENCH_DB_PATH: /data/actual-bench.sqlite
+      # --- Optional settings (uncomment to use; see the Configuration guide) ---
+      # LOG_LEVEL: info                            # debug | info | warn | error
+      # ACTUAL_BENCH_PASSWORD: "<password>"        # set the sign-in password (else the first visitor does)
+      # ACTUAL_BENCH_VAULT_KEY: "<strong-secret>"  # hold the vault key yourself (else generated)
+    volumes:
+      - actual-bench-data:/data
+    restart: unless-stopped
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.actualbench.entrypoints=websecure"
+      - "traefik.http.routers.actualbench.rule=Host(`bench.cyberiumshadow.xyz`)"
+      - "traefik.http.routers.actualbench.tls=true"
+      - "traefik.http.services.actualbench.loadbalancer.server.port=3000"
+      - "traefik.docker.network=traefik"
+      - "flame.type=application" # "app" works too
+      - "flame.name=actualbench"
+      - "flame.url=https://bench.cyberiumshadow.xyz"
+
 volumes:
+  actual-bench-data:
   actual:
 
 networks:
