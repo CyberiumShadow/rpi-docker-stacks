@@ -6,7 +6,7 @@ services:
     dns:
       - 192.168.20.249
     networks:
-      - traefik
+      - actual
     healthcheck:
       # Enable health check for the instance
       test: ['CMD-SHELL', 'node src/scripts/health-check.js']
@@ -15,16 +15,6 @@ services:
       retries: 3
       start_period: 20s
     restart: unless-stopped
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.actual.entrypoints=websecure"
-      - "traefik.http.routers.actual.rule=Host(`budget.cyberiumshadow.xyz`)"
-      - "traefik.http.routers.actual.tls=true"
-      - "traefik.http.services.actual.loadbalancer.server.port=5006"
-      - "traefik.docker.network=traefik"
-      - "flame.type=application" # "app" works too
-      - "flame.name=actual"
-      - "flame.url=https://budget.cyberiumshadow.xyz"
 
   actual-bench:
     image: xrous/actual-bench:latest
@@ -40,6 +30,8 @@ services:
     restart: unless-stopped
     networks:
       - traefik
+    depends_on:
+      - actual_server
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.actualbench.entrypoints=websecure"
@@ -51,6 +43,27 @@ services:
       - "flame.name=actualbench"
       - "flame.url=https://bench.cyberiumshadow.xyz"
 
+  abt:
+    image: ghcr.io/aelxxs/abt-sidecar:latest
+    restart: unless-stopped
+    environment:
+      ACTUAL_ORIGIN: http://actual-server:5006
+    networks:
+      - traefik
+      - actual
+    depends_on:
+      - actual_server
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.actual.entrypoints=websecure"
+      - "traefik.http.routers.actual.rule=Host(`budget.cyberiumshadow.xyz`)"
+      - "traefik.http.routers.actual.tls=true"
+      - "traefik.http.services.actual.loadbalancer.server.port=3005"
+      - "traefik.docker.network=traefik"
+      - "flame.type=application" # "app" works too
+      - "flame.name=actual"
+      - "flame.url=https://budget.cyberiumshadow.xyz"
+
 volumes:
   actual-bench-data:
   actual:
@@ -58,3 +71,4 @@ volumes:
 networks:
   traefik:
     external: true
+  actual:
