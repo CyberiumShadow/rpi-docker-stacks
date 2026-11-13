@@ -29,7 +29,34 @@ services:
     volumes:
       - matter_data:/data
 
+  emhass:
+    container_name: emhass
+    image: ghcr.io/davidusb-geek/emhass:latest
+    restart: unless-stopped
+    environment:
+      TZ: Australia/Melbourne
+    ports:
+      - "192.168.20.249:5000:5000"
+    volumes:
+      - emhass_config:/share
+      - emhass_data:/data
+    secrets:
+      - source: emhass_secrets
+        target: /app/secrets_emhass.yaml
+    labels:
+      - "flame.type=application"
+      - "flame.name=EMHASS"
+      - "flame.url=http://192.168.20.249:5000"
+
+secrets:
+  emhass_secrets:
+    environment: EMHASS_SECRETS
+
 volumes:
   homeassistant_config:
     name: homeassistant_config
   matter_data:
+  emhass_config:
+    name: emhass_config
+  emhass_data:
+    name: emhass_data
