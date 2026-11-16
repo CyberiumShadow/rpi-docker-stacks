@@ -1,0 +1,29 @@
+# Run with:  docker compose up -d --build
+# Configuration comes from .env (copy .env.example). APP_PASSWORD and PUBLIC_BASE_URL are required.
+services:
+  app:
+    image: ghcr.io/cyberiumshadow/merch-handler:latest
+    container_name: merch-handler
+    restart: unless-stopped
+    env_file: .env
+    networks:
+      - traefik
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.merch.entrypoints=websecure"
+      - "traefik.http.routers.merch.rule=Host(`merch.cyberiumshadow.xyz`)"
+      - "traefik.http.routers.merch.tls=true"
+      - "traefik.http.services.merch.loadbalancer.server.port=8080"
+      - "traefik.docker.network=traefik"
+      - "flame.type=application" # "app" works too
+      - "flame.name=merchhandler"
+      - "flame.url=https://merch.cyberiumshadow.xyz"
+    volumes:
+      - merch-data:/data
+
+volumes:
+  merch-data:
+
+networks:
+  traefik:
+    external: true
