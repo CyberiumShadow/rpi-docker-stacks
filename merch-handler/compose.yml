@@ -8,6 +8,7 @@ services:
     env_file: .env
     networks:
       - traefik
+      - merch
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.merch.entrypoints=websecure"
@@ -20,6 +21,10 @@ services:
       - "flame.url=https://merchadmin.cyberiumshadow.xyz"
     volumes:
       - merch-data:/data
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    restart: unless-stopped
+    command: tunnel --no-autoupdate run
 
 volumes:
   merch-data:
@@ -27,3 +32,4 @@ volumes:
 networks:
   traefik:
     external: true
+  merch:
