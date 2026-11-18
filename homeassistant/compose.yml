@@ -35,6 +35,7 @@ services:
     restart: unless-stopped
     environment:
       TZ: Australia/Melbourne
+      EMHASS_API_AUTH_DISABLED: true
     ports:
       - "192.168.20.249:5000:5000"
     volumes:
